@@ -55,4 +55,8 @@ public class JobService {
         int to = Math.min(from + size, filtered.size());
         return new PageImpl<>(filtered.subList(from, to), PageRequest.of(page, size), filtered.size());
     }
+
+    public void delete(Long id) {
+        store.remove(id);
+    }
 }
