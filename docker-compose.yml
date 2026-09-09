@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  devjob-db:
+    image: postgres:16
+    container_name: devjob-db
+    environment:
+      POSTGRES_DB: devjob
+      POSTGRES_USER: devjob
+      POSTGRES_PASSWORD: devjob
+    ports:
+      - "15432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgres
