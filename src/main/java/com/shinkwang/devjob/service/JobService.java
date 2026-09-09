@@ -24,16 +24,15 @@ public class JobService {
 
     public JobResponse create(JobCreateRequest req) {
         long id = sequence.incrementAndGet();
-        Job job = new Job(
-                id,
-                req.companyId(),
-                req.title(),
-                req.description(),
-                req.salary(),
-                JobStatus.OPEN
-        );
+        Job job = new Job();
+        job.setId(id);
+        job.setCompanyId(req.companyId());
+        job.setTitle(req.title());
+        job.setDescription(req.description());
+        job.setSalary(req.salary());
+        job.setStatus(JobStatus.OPEN);
 
-        store.put(id, new Job());
+        store.put(id, job);
         return JobResponse.from(job);
     }
 

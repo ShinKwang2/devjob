@@ -1,30 +1,45 @@
 package com.shinkwang.devjob.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = "job")
+@Entity
 public class Job {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "company_id", nullable = false)
     private Long companyId;
 
+    @Column(nullable = false, length = 200)
     private String title;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     private Integer salary;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private JobStatus status = JobStatus.OPEN;
 
-    public Job(Long id, Long companyId, String title, String description, Integer salary, JobStatus status) {
-        this.id = id;
-        this.companyId = companyId;
-        this.title = title;
-        this.description = description;
-        this.salary = salary;
-        this.status = status;
-    }
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 }
