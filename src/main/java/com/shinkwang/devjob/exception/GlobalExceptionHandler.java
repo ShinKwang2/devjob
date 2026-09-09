@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -15,21 +16,33 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorResponse> handlerBusiness(BusinessException ex) {
+        log.warn("Business exception: {}", ex.getErrorCode());
+        return ResponseEntity
+                .status(ex.getErrorCode().getStatus())
+                .body(ErrorResponse.of(ex.getErrorCode()));
+    }
+
     // @Valid 검증 실패 -> 400 + 어떤 필드가 왜 틀렸는지
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Void>> handleValidation(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new LinkedHashMap<>();
-        ex.getBindingResult().getFieldErrors()
-                .forEach(err -> errors.put(err.getField(), err.getDefaultMessage()));
-
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
         return ResponseEntity.badRequest()
-                .body(ApiResponse.fail("입력값이 올바르지 않습니다: " + errors));
+                .body(ErrorResponse.validationError(ex));
+    }
+
+    // 존재하지 않는 경로/리소스 - 404
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(NoResourceFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ErrorResponse.of(ErrorCode.RESOURCE_NOT_FOUND));
     }
 
     // 그 밖의 예외
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.fail("서버 오류가 발생했습니다"));
+    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
+        log.error("Unexpected exeption", ex);
+        return ResponseEntity.internalServerError()
+                .body(ErrorResponse.of(ErrorCode.INTERNAL_ERROR));
     }
 }

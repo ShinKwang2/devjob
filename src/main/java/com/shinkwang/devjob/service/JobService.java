@@ -5,8 +5,11 @@ import com.shinkwang.devjob.domain.JobStatus;
 import com.shinkwang.devjob.dto.JobCreateRequest;
 import com.shinkwang.devjob.dto.JobResponse;
 import com.shinkwang.devjob.dto.PageResponse;
+import com.shinkwang.devjob.exception.BusinessException;
+import com.shinkwang.devjob.exception.ErrorCode;
 import com.shinkwang.devjob.repository.JobRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +49,9 @@ public class JobService {
 
     @Transactional
     public void delete(Long id) {
+        if (!jobRepository.existsById(id)) {
+            throw new BusinessException(ErrorCode.JOB_NOT_FOUND);
+        }
         jobRepository.deleteById(id);
     }
 }
