@@ -1,12 +1,16 @@
 package com.shinkwang.devjob.controller;
 
+import com.shinkwang.devjob.domain.JobStatus;
 import com.shinkwang.devjob.dto.ApiResponse;
 import com.shinkwang.devjob.dto.JobCreateRequest;
 import com.shinkwang.devjob.dto.JobResponse;
+import com.shinkwang.devjob.dto.PageResponse;
 import com.shinkwang.devjob.service.JobService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,12 +38,11 @@ public class JobController {
     }
 
     @GetMapping
-    public ApiResponse<Page<JobResponse>> getJobs(
-            @RequestParam(defaultValue = "OPEN") String status,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+    public ApiResponse<PageResponse<JobResponse>> getJobs(
+            @RequestParam(defaultValue = "OPEN")JobStatus status,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return ApiResponse.ok(jobService.findByStatus(status, page, size));
+        return ApiResponse.ok(jobService.findByStatus(status, pageable));
     }
 
     @DeleteMapping("/{id}")

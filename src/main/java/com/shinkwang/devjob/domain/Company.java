@@ -27,11 +27,10 @@ public class Company {
     private String location;
 
     @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(nullable = false, updatable = false)
     private LocalDateTime updatedAt;
 
     public Company(String name, String location) {

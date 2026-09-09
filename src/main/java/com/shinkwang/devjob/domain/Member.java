@@ -32,11 +32,10 @@ public class Member {
     private Role role;
 
     @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(nullable = false)
     private LocalDateTime updatedAt;
 
     @Builder
