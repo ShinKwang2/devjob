@@ -14,7 +14,7 @@ public record JobResponse(
     public static JobResponse from(Job job) {
         return new JobResponse(
                 job.getId(),
-                job.getCompanyId(),
+                job.getCompany().getId(),
                 job.getTitle(),
                 job.getDescription(),
                 job.getSalary(),

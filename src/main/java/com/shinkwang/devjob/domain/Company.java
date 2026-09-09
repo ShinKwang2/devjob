@@ -9,6 +9,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -25,6 +27,9 @@ public class Company {
 
     @Column(length = 100)
     private String location;
+
+    @OneToMany(mappedBy = "company")
+    private List<Job> jobs = new ArrayList<>();
 
     @CreatedDate
     @Column(updatable = false)

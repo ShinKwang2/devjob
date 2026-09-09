@@ -20,8 +20,9 @@ public class Job {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_id", nullable = false)
-    private Long companyId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
     @Column(nullable = false, length = 200)
     private String title;
@@ -41,4 +42,10 @@ public class Job {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    public void update(String title, String description, Integer salary) {
+        this.title = title;
+        this.description = description;
+        this.salary = salary;
+    }
 }
