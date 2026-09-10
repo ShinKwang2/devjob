@@ -1,5 +1,6 @@
 package com.shinkwang.devjob.controller;
 
+import com.shinkwang.devjob.controller.docs.MemberApiDocs;
 import com.shinkwang.devjob.dto.ApiResponse;
 import com.shinkwang.devjob.dto.MemberJoinRequest;
 import com.shinkwang.devjob.dto.MemberResponse;
@@ -16,10 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
 @RestController
-public class MemberController {
+public class MemberController implements MemberApiDocs {
 
     private final MemberService memberService;
 
+    @Override
     @PostMapping("/join")
     public ResponseEntity<ApiResponse<MemberResponse>> join(
             @RequestBody @Valid MemberJoinRequest req

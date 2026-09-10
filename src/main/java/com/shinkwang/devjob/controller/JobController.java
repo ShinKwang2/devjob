@@ -1,5 +1,6 @@
 package com.shinkwang.devjob.controller;
 
+import com.shinkwang.devjob.controller.docs.JobApiDocs;
 import com.shinkwang.devjob.domain.JobStatus;
 import com.shinkwang.devjob.dto.*;
 import com.shinkwang.devjob.service.JobService;
@@ -26,10 +27,11 @@ import java.net.URI;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/jobs")
-public class JobController {
+public class JobController implements JobApiDocs {
 
     private final JobService jobService;
 
+    @Override
     @PostMapping
     public ResponseEntity<ApiResponse<JobResponse>> create(@RequestBody @Valid JobCreateRequest req) {
         JobResponse job = jobService.create(req);
@@ -37,11 +39,13 @@ public class JobController {
         return ResponseEntity.created(location).body(ApiResponse.ok(job));
     }
 
+    @Override
     @GetMapping("/{id}")
     public ApiResponse<JobResponse> getJob(@PathVariable Long id) {
         return ApiResponse.ok(jobService.findById(id));
     }
 
+    @Override
     @GetMapping
     public ApiResponse<PageResponse<JobResponse>> getJobs(
             @RequestParam(defaultValue = "OPEN")JobStatus status,
@@ -50,11 +54,13 @@ public class JobController {
         return ApiResponse.ok(jobService.findByStatus(status, pageable));
     }
 
+    @Override
     @PutMapping("/{id}")
     public ApiResponse<JobResponse> update(@PathVariable Long id, @RequestBody @Valid JobUpdateRequest req) {
         return ApiResponse.ok(jobService.update(id, req));
     }
 
+    @Override
     @GetMapping("/search")
     public ApiResponse<PageResponse<JobResponse>> search(
             @RequestParam(required = false) String keyword,
@@ -64,6 +70,7 @@ public class JobController {
     }
 
 
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         jobService.delete(id);
