@@ -1,10 +1,7 @@
 package com.shinkwang.devjob.controller;
 
 import com.shinkwang.devjob.domain.JobStatus;
-import com.shinkwang.devjob.dto.ApiResponse;
-import com.shinkwang.devjob.dto.JobCreateRequest;
-import com.shinkwang.devjob.dto.JobResponse;
-import com.shinkwang.devjob.dto.PageResponse;
+import com.shinkwang.devjob.dto.*;
 import com.shinkwang.devjob.service.JobService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +40,11 @@ public class JobController {
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         return ApiResponse.ok(jobService.findByStatus(status, pageable));
+    }
+
+    @PutMapping("/{id}")
+    public ApiResponse<JobResponse> update(@PathVariable Long id, @RequestBody @Valid JobUpdateRequest req) {
+        return ApiResponse.ok(jobService.update(id, req));
     }
 
     @DeleteMapping("/{id}")

@@ -51,6 +51,13 @@ public class JobService {
                         .map(JobResponse::from)
         );
     }
+    @Transactional
+    public JobResponse update(Long id, JobUpdateRequest req) {
+        Job job = jobRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.JOB_NOT_FOUND));
+        job.update(req.title(), req.description(), req.salary());
+        return JobResponse.from(job);
+    }
 
     @Transactional
     public void delete(Long id) {
