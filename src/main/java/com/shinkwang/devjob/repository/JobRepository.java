@@ -17,7 +17,7 @@ public interface JobRepository extends JpaRepository<Job, Long> {
     @Query( value = """
             SELECT j FROM Job j
             JOIN FETCH j.company
-            WHERE j.status = :stattus
+            WHERE j.status = :status
             """,
             countQuery = "SELECT COUNT(j) FROM Job j WHERE j.status = :status"
     )
