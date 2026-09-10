@@ -6,6 +6,7 @@ import com.shinkwang.devjob.domain.JobStatus;
 public record JobResponse(
         Long id,
         Long companyId,
+        String companyName,
         String title,
         String description,
         Integer salary,
@@ -15,6 +16,7 @@ public record JobResponse(
         return new JobResponse(
                 job.getId(),
                 job.getCompany().getId(),
+                job.getCompany().getName(),
                 job.getTitle(),
                 job.getDescription(),
                 job.getSalary(),

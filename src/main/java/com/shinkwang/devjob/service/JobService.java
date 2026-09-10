@@ -5,6 +5,7 @@ import com.shinkwang.devjob.domain.Job;
 import com.shinkwang.devjob.domain.JobStatus;
 import com.shinkwang.devjob.dto.JobCreateRequest;
 import com.shinkwang.devjob.dto.JobResponse;
+import com.shinkwang.devjob.dto.JobUpdateRequest;
 import com.shinkwang.devjob.dto.PageResponse;
 import com.shinkwang.devjob.exception.BusinessException;
 import com.shinkwang.devjob.exception.ErrorCode;
@@ -47,7 +48,7 @@ public class JobService {
     public PageResponse<JobResponse> findByStatus(JobStatus status, Pageable pageable) {
 
         return PageResponse.of(
-                jobRepository.findByStatus(status, pageable)
+                jobRepository.findByStatusWithCompany(status, pageable)
                         .map(JobResponse::from)
         );
     }
@@ -57,6 +58,12 @@ public class JobService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.JOB_NOT_FOUND));
         job.update(req.title(), req.description(), req.salary());
         return JobResponse.from(job);
+    }
+
+    public PageResponse<JobResponse> search(String keyword, String location, Pageable pageable) {
+        return PageResponse.of(jobRepository.searchJobs(keyword, location, pageable)
+                .map(JobResponse::from)
+        );
     }
 
     @Transactional

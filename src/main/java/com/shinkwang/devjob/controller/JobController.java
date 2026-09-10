@@ -13,6 +13,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+/**
+ * 채용 공고 API.
+ *
+ * - POST   /api/jobs       → 201 Created + Location 헤더
+ * - GET    /api/jobs/{id}  → 200 OK / 404 Not Found
+ * - GET    /api/jobs       → status + Pageable(page/size/sort) 기반 페이징 목록
+ * - PUT    /api/jobs/{id}  → 200 OK (전체 교체)
+ * - GET    /api/jobs/search → 제목/회사명/지역 통합 검색
+ * - DELETE /api/jobs/{id}  → 204 No Content
+ */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/jobs")
@@ -46,6 +56,15 @@ public class JobController {
     public ApiResponse<JobResponse> update(@PathVariable Long id, @RequestBody @Valid JobUpdateRequest req) {
         return ApiResponse.ok(jobService.update(id, req));
     }
+
+    @GetMapping("/search")
+    public ApiResponse<PageResponse<JobResponse>> search(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String location,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ApiResponse.ok(jobService.search(keyword, location, pageable));
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
