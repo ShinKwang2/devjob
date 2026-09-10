@@ -38,10 +38,8 @@ public class JobController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<JobResponse>> getJob(@PathVariable Long id) {
-        return jobService.findById(id)
-                .map(job -> ResponseEntity.ok(ApiResponse.ok(job)))
-                .orElse(ResponseEntity.notFound().build());
+    public ApiResponse<JobResponse> getJob(@PathVariable Long id) {
+        return ApiResponse.ok(jobService.findById(id));
     }
 
     @GetMapping

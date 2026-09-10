@@ -41,8 +41,10 @@ public class JobService {
         return JobResponse.from(jobRepository.save(job));
     }
 
-    public Optional<JobResponse> findById(Long id) {
-        return jobRepository.findById(id).map(JobResponse::from);
+    public JobResponse findById(Long id) {
+        Job job = jobRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.JOB_NOT_FOUND));
+        return JobResponse.from(job);
     }
 
     public PageResponse<JobResponse> findByStatus(JobStatus status, Pageable pageable) {
