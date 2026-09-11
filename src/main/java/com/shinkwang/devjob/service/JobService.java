@@ -54,9 +54,11 @@ public class JobService {
         );
     }
     @Transactional
-    public JobResponse update(Long id, JobUpdateRequest req) {
+    public JobResponse update(Long id, JobUpdateRequest req, Long requesterId, boolean isAdmin) {
         Job job = jobRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.JOB_NOT_FOUND));
+        checkOwner(job, requesterId, isAdmin);
+
         job.update(req.title(), req.description(), req.salary());
         return JobResponse.from(job);
     }
@@ -73,5 +75,20 @@ public class JobService {
             throw new BusinessException(ErrorCode.JOB_NOT_FOUND);
         }
         jobRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void delete(Long id, Long requesterId, boolean isAdmin) {
+        Job job = jobRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.JOB_NOT_FOUND));
+        checkOwner(job, requesterId, isAdmin);
+
+        jobRepository.deleteById(id);
+    }
+
+    private void checkOwner(Job job, Long requesterId, boolean isAdmin) {
+        if (!isAdmin && !job.getRegisteredBy().equals(requesterId)) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
     }
 }
