@@ -44,4 +44,8 @@ public class Member {
         this.password = password;
         this.role = role;
     }
+
+    public void changeRole(Role role) {
+        this.role = role;
+    }
 }

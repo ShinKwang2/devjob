@@ -43,4 +43,23 @@ public class MemberService {
     public List<Member> findByRole(Role role) {
         return memberRepository.findByRoleOrderByCreatedAtDesc(role);
     }
+
+    public List<MemberResponse> findAll(Role role) {
+        List<Member> members = (role != null)
+                ? memberRepository.findByRoleOrderByCreatedAtDesc(role)
+                : memberRepository.findAll();
+
+        return members.stream()
+                .map(MemberResponse::from)
+                .toList();
+    }
+
+    @Transactional
+    public MemberResponse changeRole(Long memberId, Role role) {
+        Member member = findById(memberId);
+        member.changeRole(role);
+        return MemberResponse.from(member);
+    }
+
+
 }
