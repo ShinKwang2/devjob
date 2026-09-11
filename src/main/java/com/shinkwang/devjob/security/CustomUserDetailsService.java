@@ -23,21 +23,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         Member member = memberRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("회원을 찾을 수 없습니다. email=" + username));
 
-        return new User(
-                member.getEmail(),
-                member.getPassword(),
-                List.of(new SimpleGrantedAuthority("ROLE_" + member.getRole().name()))
-        );
+        return new CustomUserDetails(member);
     }
 
     public UserDetails loadUserById(Long memberId) throws UsernameNotFoundException {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new UsernameNotFoundException("회원을 찾을 수 없습니다. id=" + memberId));
 
-        return new User(
-                member.getEmail(),
-                member.getPassword(),
-                List.of(new SimpleGrantedAuthority("ROLE_" + member.getRole().name()))
-        );
+        return new CustomUserDetails(member);
     }
 }
