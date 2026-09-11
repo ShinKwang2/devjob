@@ -36,6 +36,9 @@ public class Job {
     @Column(nullable = false, length = 20)
     private JobStatus status = JobStatus.OPEN;
 
+    @Column(nullable = false)
+    private Long registeredBy;
+
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;

@@ -16,8 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
@@ -27,7 +25,7 @@ public class JobService {
     private final CompanyRepository companyRepository;
 
     @Transactional
-    public JobResponse create(JobCreateRequest req) {
+    public JobResponse create(JobCreateRequest req, Long registeredBy) {
         Company company = companyRepository.findById(req.companyId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
 
@@ -37,6 +35,7 @@ public class JobService {
         job.setDescription(req.description());
         job.setSalary(req.salary());
         job.setStatus(JobStatus.OPEN);
+        job.setRegisteredBy(registeredBy);
 
         return JobResponse.from(jobRepository.save(job));
     }

@@ -3,6 +3,7 @@ package com.shinkwang.devjob.controller;
 import com.shinkwang.devjob.controller.docs.JobApiDocs;
 import com.shinkwang.devjob.domain.JobStatus;
 import com.shinkwang.devjob.dto.*;
+import com.shinkwang.devjob.security.CustomUserDetails;
 import com.shinkwang.devjob.service.JobService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -33,8 +35,11 @@ public class JobController implements JobApiDocs {
 
     @Override
     @PostMapping
-    public ResponseEntity<ApiResponse<JobResponse>> create(@RequestBody @Valid JobCreateRequest req) {
-        JobResponse job = jobService.create(req);
+    public ResponseEntity<ApiResponse<JobResponse>> create(
+            @RequestBody @Valid JobCreateRequest req,
+            @AuthenticationPrincipal CustomUserDetails user
+    ) {
+        JobResponse job = jobService.create(req, user.getId());
         URI location = URI.create("/api/jobs/" + job.id());
         return ResponseEntity.created(location).body(ApiResponse.ok(job));
     }
@@ -56,8 +61,12 @@ public class JobController implements JobApiDocs {
 
     @Override
     @PutMapping("/{id}")
-    public ApiResponse<JobResponse> update(@PathVariable Long id, @RequestBody @Valid JobUpdateRequest req) {
-        return ApiResponse.ok(jobService.update(id, req));
+    public ApiResponse<JobResponse> update(
+            @PathVariable Long id,
+            @RequestBody @Valid JobUpdateRequest req,
+            @AuthenticationPrincipal CustomUserDetails user
+    ) {
+        return ApiResponse.ok(jobService.update(id, req, user.getId(), isAdmin(user)));
     }
 
     @Override
@@ -72,8 +81,16 @@ public class JobController implements JobApiDocs {
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        jobService.delete(id);
+    public ResponseEntity<Void> delete(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails user
+    ) {
+        jobService.delete(id, user.getId(), isAdmin(user));
         return ResponseEntity.noContent().build();
+    }
+
+    private boolean isAdmin(CustomUserDetails user){
+        return user.getAuthorities().stream()
+                .anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()));
     }
 }

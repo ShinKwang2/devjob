@@ -2,6 +2,7 @@ package com.shinkwang.devjob.controller.docs;
 
 import com.shinkwang.devjob.domain.JobStatus;
 import com.shinkwang.devjob.dto.*;
+import com.shinkwang.devjob.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 public interface JobApiDocs {
 
     @Operation(summary = "채용 공고 등록", description = "새 채용 공고를 등록한다")
-    ResponseEntity<ApiResponse<JobResponse>> create(JobCreateRequest req);
+    ResponseEntity<ApiResponse<JobResponse>> create(JobCreateRequest req, CustomUserDetails user);
 
     @Operation(summary = "채용 공고 단건 조회")
     ApiResponse<JobResponse> getJob(@Parameter(description = "채용공고 ID", example = "1") Long id);
@@ -24,7 +25,7 @@ public interface JobApiDocs {
     );
 
     @Operation(summary = "채용 공고 수정", description = "title/description/salary를 전체 교체한다")
-    ApiResponse<JobResponse> update(Long id, JobUpdateRequest req);
+    ApiResponse<JobResponse> update(Long id, JobUpdateRequest req, CustomUserDetails user);
 
     @Operation(summary = "채용 공고 검색", description = "제목/회사명/지역으로 OPEN 공고를 통합 검색한다")
     ApiResponse<PageResponse<JobResponse>> search(
@@ -34,5 +35,5 @@ public interface JobApiDocs {
     );
 
     @Operation(summary = "채용 공고 삭제")
-    ResponseEntity<Void> delete(Long id);
+    ResponseEntity<Void> delete(Long id, CustomUserDetails user);
 }
