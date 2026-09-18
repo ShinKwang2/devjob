@@ -5,6 +5,7 @@ import com.shinkwang.devjob.domain.JobApplication;
 import com.shinkwang.devjob.domain.JobStatus;
 import com.shinkwang.devjob.domain.Member;
 import com.shinkwang.devjob.dto.JobApplicationResponse;
+import com.shinkwang.devjob.email.EmailService;
 import com.shinkwang.devjob.exception.BusinessException;
 import com.shinkwang.devjob.exception.ErrorCode;
 import com.shinkwang.devjob.repository.JobApplicationRepository;
@@ -24,6 +25,7 @@ public class JobApplicationService {
     private final JobApplicationRepository jobApplicationRepository;
     private final JobRepository jobRepository;
     private final MemberRepository memberRepository;
+    private final EmailService emailService;
 
     @Transactional
     public JobApplicationResponse apply(Long memberId, Long jobId) {
@@ -37,12 +39,17 @@ public class JobApplicationService {
             throw new BusinessException(ErrorCode.ALREADY_APPLIED);
         }
 
-        Member member = memberRepository.getReferenceById(memberId);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
         JobApplication saved = jobApplicationRepository.save(JobApplication.builder()
                 .member(member)
                 .job(job)
                 .build()
+        );
+
+        emailService.sendJobApplicationCompletedEmail(
+                member.getEmail(), job.getTitle(), job.getCompany().getName()
         );
 
         return JobApplicationResponse.from(saved);
