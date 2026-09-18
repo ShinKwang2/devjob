@@ -22,6 +22,10 @@ public enum ErrorCode {
     COMPANY_NOT_FOUND(HttpStatus.NOT_FOUND, "회사를 찾을 수 없습니다"),
     JOB_CLOSED(HttpStatus.BAD_REQUEST, "마감된 공고입니다"),
 
+    // 지원
+    ALREADY_APPLIED(HttpStatus.CONFLICT, "이미 지원한 공고입니다"),
+    JOB_APPLICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "지원 내역을 찾을 수 없습니다"),
+
     // 공통
     FORBIDDEN(HttpStatus.FORBIDDEN, "이 작업을 수행할 권한이 없습니다"),
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "입력값이 올바르지 않습니다"),
