@@ -3,23 +3,26 @@ package com.shinkwang.devjob.service;
 import com.shinkwang.devjob.domain.Company;
 import com.shinkwang.devjob.domain.Job;
 import com.shinkwang.devjob.domain.JobStatus;
-import com.shinkwang.devjob.dto.JobCreateRequest;
-import com.shinkwang.devjob.dto.JobResponse;
-import com.shinkwang.devjob.dto.JobUpdateRequest;
-import com.shinkwang.devjob.dto.PageResponse;
+import com.shinkwang.devjob.dto.*;
 import com.shinkwang.devjob.exception.BusinessException;
 import com.shinkwang.devjob.exception.ErrorCode;
 import com.shinkwang.devjob.repository.CompanyRepository;
 import com.shinkwang.devjob.repository.JobRepository;
+import com.shinkwang.devjob.util.SortValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
 public class JobService {
+
+    private static final Set<String> ALLOWED_SORT_PROPERTIES =
+            Set.of("id", "title", "salary", "status", "deadline", "createdAt", "updatedAt");
 
     private final JobRepository jobRepository;
     private final CompanyRepository companyRepository;
@@ -35,6 +38,7 @@ public class JobService {
         job.setDescription(req.description());
         job.setSalary(req.salary());
         job.setStatus(JobStatus.OPEN);
+        job.setDeadline(req.deadline());
         job.setRegisteredBy(registeredBy);
 
         return JobResponse.from(jobRepository.save(job));
@@ -63,8 +67,10 @@ public class JobService {
         return JobResponse.from(job);
     }
 
-    public PageResponse<JobResponse> search(String keyword, String location, Pageable pageable) {
-        return PageResponse.of(jobRepository.searchJobs(keyword, location, pageable)
+    public PageResponse<JobResponse> search(JobSearchRequest req, Pageable pageable) {
+        SortValidator.validate(pageable.getSort(), ALLOWED_SORT_PROPERTIES);
+
+        return PageResponse.of(jobRepository.findAll(req.toSpecification(), pageable)
                 .map(JobResponse::from)
         );
     }

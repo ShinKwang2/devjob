@@ -3,6 +3,8 @@ package com.shinkwang.devjob.dto;
 import com.shinkwang.devjob.domain.Job;
 import com.shinkwang.devjob.domain.JobStatus;
 
+import java.time.LocalDate;
+
 public record JobResponse(
         Long id,
         Long companyId,
@@ -10,7 +12,8 @@ public record JobResponse(
         String title,
         String description,
         Integer salary,
-        JobStatus status
+        JobStatus status,
+        LocalDate deadline
 ) {
     public static JobResponse from(Job job) {
         return new JobResponse(
@@ -20,7 +23,8 @@ public record JobResponse(
                 job.getTitle(),
                 job.getDescription(),
                 job.getSalary(),
-                job.getStatus()
+                job.getStatus(),
+                job.getDeadline()
         );
     }
 }

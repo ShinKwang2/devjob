@@ -6,6 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -38,6 +39,9 @@ public class Job {
 
     @Column(nullable = false)
     private Long registeredBy;
+
+    // 공고 마감일. null이면 상시 채용으로 간주
+    private LocalDate deadline;
 
     @CreatedDate
     @Column(updatable = false)

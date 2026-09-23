@@ -72,10 +72,9 @@ public class JobController implements JobApiDocs {
     @Override
     @GetMapping("/search")
     public ApiResponse<PageResponse<JobResponse>> search(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String location,
+            @ModelAttribute JobSearchRequest req,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ApiResponse.ok(jobService.search(keyword, location, pageable));
+        return ApiResponse.ok(jobService.search(req, pageable));
     }
 
 

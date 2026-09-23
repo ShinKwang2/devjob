@@ -8,3 +8,33 @@ Content-Type: application/json
   "email": "skl@crinity.com",
   "password": "12345678"
 }
+
+### 로그인
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "skl@crinity.com",
+  "password": "12345678"
+}
+
+> {%
+    client.global.set("accessToken", response.body.data.accessToken);
+%}
+
+### me
+GET  {{host}}/api/members/me
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+### 공고 등록
+POST {{host}}/api/jobs
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "title": "백엔드 개발자-shinlog에서 구함",
+  "companyId": 1,
+  "salary": 5000,
+  "description": "모집합니다"
+}
