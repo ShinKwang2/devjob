@@ -1,0 +1,31 @@
+@host = http://localhost:8888
+
+### 사용자 로그인
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "skl@crinity.com",
+  "password": "12345678"
+}
+
+> {%
+    client.global.set("accessToken", response.body.data.accessToken);
+%}
+
+### 공고 등록
+POST {{host}}/api/jobs
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "백엔드 개발자",
+  "companyId": 1,
+  "salary": 5000,
+  "description": "모집"
+}
+
+### 공고 지원
+POST {{host}}/api/jobs/33/apply
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
