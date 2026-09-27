@@ -35,6 +35,7 @@ public class JobService {
         job.setDescription(req.description());
         job.setSalary(req.salary());
         job.setStatus(JobStatus.OPEN);
+        job.setDeadline(req.deadline());
         job.setRegisteredBy(registeredBy);
 
         return JobResponse.from(jobRepository.save(job));
