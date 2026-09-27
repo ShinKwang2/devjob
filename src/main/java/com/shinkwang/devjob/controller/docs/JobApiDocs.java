@@ -29,8 +29,7 @@ public interface JobApiDocs {
 
     @Operation(summary = "채용 공고 검색", description = "제목/회사명/지역으로 OPEN 공고를 통합 검색한다")
     ApiResponse<PageResponse<JobResponse>> search(
-            String keyword,
-            String location,
+            JobSearchRequest req,
             Pageable pageable
     );
 
