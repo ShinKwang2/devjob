@@ -1,0 +1,39 @@
+@host = http://localhost:8888
+
+### 로그인: 응답의 JWT를 전역 변수에 저장
+# @name login
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "skl@crinity.com",
+  "password": "12345678"
+}
+
+> {%
+    client.global.set("accessToken", response.body.data.accessToken);
+%}
+
+### 파일 업로드
+POST {{host}}/api/files/upload
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data; boundary=FileUploadBoundary
+
+--FileUploadBoundary
+Content-Disposition: form-data; name="file"; filename="test-image.jpeg"
+Content-Type: image/jpeg
+
+< ./fixtures/test-image.jpeg
+--FileUploadBoundary
+
+> {%
+    client.test("파일 업로드 성공", function () {
+        client.assert(response.status === 201, "201 Created여야 합니다.");
+        client.assert(typeof response.body.data === "string", "응답 data는 업로드 URL이어야 합니다.");
+    });
+
+    client.global.set("uploadedFileUrl", response.body.data);
+ %}
+
+
+

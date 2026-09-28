@@ -29,6 +29,18 @@ spring:
           starttls:
             enable: true
 
+  web:
+    resources:
+      static-locations: "file:uploads/, classpath:/static/" # upload/ 를 정적 경로로 제공
+  servlet:
+    multipart:
+      max-file-size: 10MB # 서버가 받아들이는 하드 리밋
+      max-request-size: 10MB
+
+file:
+  upload-dir: uploads
+  base-url: http://localhost:8888
+
 mail:
   enabled: false
 
