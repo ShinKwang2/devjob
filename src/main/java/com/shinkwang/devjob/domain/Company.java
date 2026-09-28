@@ -32,10 +32,11 @@ public class Company {
     private List<Job> jobs = new ArrayList<>();
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     public Company(String name, String location) {

@@ -37,17 +37,18 @@ public class Job {
     @Column(nullable = false, length = 20)
     private JobStatus status = JobStatus.OPEN;
 
-    @Column(nullable = false)
+    @Column(name = "registered_by", nullable = false)
     private Long registeredBy;
 
     // 공고 마감일. null이면 상시 채용으로 간주
     private LocalDate deadline;
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     public void update(String title, String description, Integer salary, LocalDate deadline) {

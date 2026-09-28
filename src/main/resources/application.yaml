@@ -9,13 +9,16 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate # 운영에서는 none. 생성은 Flyway가 전달
     show-sql: true
     properties:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
 
   mail:
     host: smtp.gmail.com

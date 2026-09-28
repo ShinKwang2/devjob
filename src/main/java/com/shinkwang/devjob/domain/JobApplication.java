@@ -38,10 +38,11 @@ public class JobApplication {
     private JobApplicationStatus status;
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createAt;
 
     @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updateAt;
 
     @Builder
