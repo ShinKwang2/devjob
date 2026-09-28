@@ -4,14 +4,10 @@ import com.shinkwang.devjob.domain.Role;
 import com.shinkwang.devjob.dto.ApiResponse;
 import com.shinkwang.devjob.dto.MemberResponse;
 import com.shinkwang.devjob.dto.RoleChangeRequest;
-import com.shinkwang.devjob.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 

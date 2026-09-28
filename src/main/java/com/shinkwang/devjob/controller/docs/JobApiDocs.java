@@ -27,7 +27,7 @@ public interface JobApiDocs {
     @Operation(summary = "채용 공고 수정", description = "title/description/salary를 전체 교체한다")
     ApiResponse<JobResponse> update(Long id, JobUpdateRequest req, CustomUserDetails user);
 
-    @Operation(summary = "채용 공고 검색", description = "제목/회사명/지역으로 OPEN 공고를 통합 검색한다")
+    @Operation(summary = "채용 공고 검색", description = "키워드·지역·상태·연봉 범위·마감일 기준으로 채용 공고를 동적 검색한다")
     ApiResponse<PageResponse<JobResponse>> search(
             JobSearchRequest req,
             Pageable pageable
