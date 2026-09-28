@@ -56,4 +56,8 @@ public class Job {
         this.salary = salary;
         this.deadline = deadline;
     }
+
+    public void changeStatus(JobStatus status) {
+        this.status = status;
+    }
 }

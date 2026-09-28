@@ -9,6 +9,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
+import java.util.List;
+
 public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificationExecutor<Job> {
 
     Page<Job> findByStatus(JobStatus status, Pageable pageable);
@@ -47,4 +50,6 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
     Page<Job> searchJobs(@Param("keyword") String keyword,
                          @Param("location") String location,
                          Pageable pageable);
+
+    List<Job> findByStatusAndDeadlineBefore(JobStatus status, LocalDate deadline);
 }
