@@ -63,7 +63,7 @@ public class JobService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.JOB_NOT_FOUND));
         checkOwner(job, requesterId, isAdmin);
 
-        job.update(req.title(), req.description(), req.salary());
+        job.update(req.title(), req.description(), req.salary(), req.deadline());
         return JobResponse.from(job);
     }
 

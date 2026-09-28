@@ -50,9 +50,10 @@ public class Job {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public void update(String title, String description, Integer salary) {
+    public void update(String title, String description, Integer salary, LocalDate deadline) {
         this.title = title;
         this.description = description;
         this.salary = salary;
+        this.deadline = deadline;
     }
 }
