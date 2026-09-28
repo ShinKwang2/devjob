@@ -51,6 +51,7 @@ public class JobService {
     }
 
     public PageResponse<JobResponse> findByStatus(JobStatus status, Pageable pageable) {
+        SortValidator.validate(pageable.getSort(), ALLOWED_SORT_PROPERTIES);
 
         return PageResponse.of(
                 jobRepository.findByStatusWithCompany(status, pageable)
