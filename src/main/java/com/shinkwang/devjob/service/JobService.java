@@ -82,14 +82,14 @@ public class JobService {
         );
     }
 
-//    @CacheEvict(value = "jobs", allEntries = true)
-//    @Transactional
-//    public void delete(Long id) {
-//        if (!jobRepository.existsById(id)) {
-//            throw new BusinessException(ErrorCode.JOB_NOT_FOUND);
-//        }
-//        jobRepository.deleteById(id);
-//    }
+    @CacheEvict(value = "jobs", allEntries = true)
+    @Transactional
+    public void delete(Long id) {
+        if (!jobRepository.existsById(id)) {
+            throw new BusinessException(ErrorCode.JOB_NOT_FOUND);
+        }
+        jobRepository.deleteById(id);
+    }
 
     @CacheEvict(value = "jobs", allEntries = true)
     @Transactional
