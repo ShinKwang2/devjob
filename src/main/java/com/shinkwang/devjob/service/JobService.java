@@ -10,6 +10,8 @@ import com.shinkwang.devjob.repository.CompanyRepository;
 import com.shinkwang.devjob.repository.JobRepository;
 import com.shinkwang.devjob.util.SortValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,7 @@ public class JobService {
     private final JobRepository jobRepository;
     private final CompanyRepository companyRepository;
 
+    @CacheEvict(value = "jobs", allEntries = true)
     @Transactional
     public JobResponse create(JobCreateRequest req, Long registeredBy) {
         Company company = companyRepository.findById(req.companyId())
@@ -50,6 +53,7 @@ public class JobService {
         return JobResponse.from(job);
     }
 
+    @Cacheable(value = "jobs", key = "#status + '-' + #pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort")
     public PageResponse<JobResponse> findByStatus(JobStatus status, Pageable pageable) {
         SortValidator.validate(pageable.getSort(), ALLOWED_SORT_PROPERTIES);
 
@@ -58,6 +62,8 @@ public class JobService {
                         .map(JobResponse::from)
         );
     }
+
+    @CacheEvict(value = "jobs", allEntries = true)
     @Transactional
     public JobResponse update(Long id, JobUpdateRequest req, Long requesterId, boolean isAdmin) {
         Job job = jobRepository.findById(id)
@@ -76,14 +82,16 @@ public class JobService {
         );
     }
 
-    @Transactional
-    public void delete(Long id) {
-        if (!jobRepository.existsById(id)) {
-            throw new BusinessException(ErrorCode.JOB_NOT_FOUND);
-        }
-        jobRepository.deleteById(id);
-    }
+//    @CacheEvict(value = "jobs", allEntries = true)
+//    @Transactional
+//    public void delete(Long id) {
+//        if (!jobRepository.existsById(id)) {
+//            throw new BusinessException(ErrorCode.JOB_NOT_FOUND);
+//        }
+//        jobRepository.deleteById(id);
+//    }
 
+    @CacheEvict(value = "jobs", allEntries = true)
     @Transactional
     public void delete(Long id, Long requesterId, boolean isAdmin) {
         Job job = jobRepository.findById(id)

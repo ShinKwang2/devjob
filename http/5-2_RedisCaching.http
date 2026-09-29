@@ -1,0 +1,35 @@
+@host = http://localhost:8888
+
+### 로그인: 응답의 JWT를 전역 변수에 저장
+# @name login
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "skl@crinity.com",
+  "password": "12345678"
+}
+
+> {%
+    client.global.set("accessToken", response.body.data.accessToken);
+%}
+
+###
+# @name OPEN공고 조회 및 Redis 캐싱(Cacheable)
+GET {{host}}/api/jobs?status=OPEN
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+# @name 새 공고 등록 및 캐시 무효(CachEvict)
+POST {{host}}/api/jobs
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "새 공고",
+  "companyId": 1,
+  "salary": 5000,
+  "description": "새 공고 모집",
+  "deadline": "2026-12-31"
+}
