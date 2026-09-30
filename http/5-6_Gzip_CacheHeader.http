@@ -1,0 +1,7 @@
+@host = http://localhost:8888
+
+### 공고 상세 조회 -> Cache-Control: max-age=60, must-revalidate, private 확인
+GET {{host}}/api/jobs/1
+
+### 공고 목록 조회 -> GZIP 확인
+GET {{host}}/api/jobs

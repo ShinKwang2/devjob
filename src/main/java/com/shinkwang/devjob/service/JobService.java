@@ -8,6 +8,7 @@ import com.shinkwang.devjob.exception.BusinessException;
 import com.shinkwang.devjob.exception.ErrorCode;
 import com.shinkwang.devjob.repository.CompanyRepository;
 import com.shinkwang.devjob.repository.JobRepository;
+import com.shinkwang.devjob.service.result.JobDetailResult;
 import com.shinkwang.devjob.util.SortValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -51,6 +52,17 @@ public class JobService {
         Job job = jobRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.JOB_NOT_FOUND));
         return JobResponse.from(job);
+    }
+
+    public JobDetailResult findDetail(Long id) {
+        Job job = jobRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.JOB_NOT_FOUND));
+
+        return new JobDetailResult(
+                JobResponse.from(job),
+                job.getVersion(),
+                job.getCompany().getVersion()
+        );
     }
 
     @Cacheable(value = "jobs", key = "#status + '-' + #pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort")

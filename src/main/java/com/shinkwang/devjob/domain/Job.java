@@ -43,6 +43,10 @@ public class Job {
     // 공고 마감일. null이면 상시 채용으로 간주
     private LocalDate deadline;
 
+    @Version
+    @Column(nullable = false)
+    private Long version;
+
     @CreatedDate
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

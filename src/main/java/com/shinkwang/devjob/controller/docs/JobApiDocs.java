@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.context.request.WebRequest;
 
 @Tag(name = "채용 공고", description = "Job API")
 public interface JobApiDocs {
@@ -16,7 +17,7 @@ public interface JobApiDocs {
     ResponseEntity<ApiResponse<JobResponse>> create(JobCreateRequest req, CustomUserDetails user);
 
     @Operation(summary = "채용 공고 단건 조회")
-    ApiResponse<JobResponse> getJob(@Parameter(description = "채용공고 ID", example = "1") Long id);
+    ResponseEntity<ApiResponse<JobResponse>> getJob(@Parameter(description = "채용공고 ID", example = "1") Long id, WebRequest request);
 
     @Operation(summary = "채용 공고 목록 조회", description = "상태(status)별 페이징 목록을 조회한다.")
     ApiResponse<PageResponse<JobResponse>> getJobs(

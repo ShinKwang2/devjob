@@ -5,16 +5,21 @@ import com.shinkwang.devjob.domain.JobStatus;
 import com.shinkwang.devjob.dto.*;
 import com.shinkwang.devjob.security.CustomUserDetails;
 import com.shinkwang.devjob.service.JobService;
+import com.shinkwang.devjob.service.result.JobDetailResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
 import java.net.URI;
+import java.time.Duration;
 
 /**
  * 채용 공고 API.
@@ -31,6 +36,10 @@ import java.net.URI;
 @RequestMapping("/api/jobs")
 public class JobController implements JobApiDocs {
 
+    private static final CacheControl JOB_DETAIL_CACHE_CONTROL = CacheControl.maxAge(Duration.ofSeconds(60))
+            .cachePrivate()
+            .mustRevalidate();
+
     private final JobService jobService;
 
     @Override
@@ -46,8 +55,26 @@ public class JobController implements JobApiDocs {
 
     @Override
     @GetMapping("/{id}")
-    public ApiResponse<JobResponse> getJob(@PathVariable Long id) {
-        return ApiResponse.ok(jobService.findById(id));
+    public ResponseEntity<ApiResponse<JobResponse>> getJob(
+            @PathVariable Long id,
+            WebRequest request
+    ) {
+        JobDetailResult detail = jobService.findDetail(id);
+
+        // HTTP ETag 문법상 큰따옴표가 필요하다
+        String etag = "\"" + detail.validator() + "\"";
+
+        if (request.checkNotModified(etag)) {
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED)
+                    .eTag(etag)
+                    .cacheControl(JOB_DETAIL_CACHE_CONTROL)
+                    .build();
+        }
+
+        return ResponseEntity.ok()
+                .eTag(etag)
+                .cacheControl(JOB_DETAIL_CACHE_CONTROL)
+                .body(ApiResponse.ok(detail.response()));
     }
 
     @Override

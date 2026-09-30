@@ -31,6 +31,10 @@ public class Company {
     @OneToMany(mappedBy = "company")
     private List<Job> jobs = new ArrayList<>();
 
+    @Version
+    @Column(nullable = false)
+    private Long version;
+
     @CreatedDate
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
