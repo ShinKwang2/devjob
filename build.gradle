@@ -36,6 +36,9 @@ dependencies {
     // Rate Limit, 단일 서버 - 메모리 기반
     implementation 'com.bucket4j:bucket4j_jdk17-core:8.14.0'
 
+    // Server Monitoring
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
     // jwt
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'

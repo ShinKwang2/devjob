@@ -57,7 +57,20 @@ mail:
 server:
   port: 8888
 
-
 jwt:
   secret: "devjob-portfolio-jwt-secret-key-please-change-this-in-production-1234567890"
   expiration:  3600000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus # 노출할 것만 명시
+  endpoint:
+    health:
+      show-details: when_authorized
+      show-components: when_authorized
+      roles: ADMIN
+  health:
+    mail:
+      enabled: false # SMTP 미설정 시 메일 헬스체크로 health=DOWN 방지
