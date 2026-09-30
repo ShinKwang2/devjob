@@ -1,0 +1,27 @@
+<configuration>
+    <property name="LOG_PATTERN" value="%d{HH:mm:ss.SSS} [%X{requestId:-NO_REQ}] [%thread] %-5level %logger{36} - %msg%n" />
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 로컬/개발: com.devjob 패키지를 DEBUG까지 -->
+    <springProfile name="local,dev,test">
+        <root level="INFO"><appender-ref ref="CONSOLE" /></root>
+        <logger name="com.shinkwang.devjob" level="DEBUG" />
+    </springProfile>
+
+    <!-- 운영: 폭주를 막기 위해 root는 WARN -->
+    <springProfile name="prod">
+        <root level="WARN"><appender-ref ref="CONSOLE" /></root>
+        <logger name="com.shinkwang.devjob" level="INFO" />
+    </springProfile>
+
+    <!-- 프로파일 미지정(기본): 로컬처럼 동작 -->
+    <springProfile name="default">
+        <root level="INFO"><appender-ref ref="CONSOLE" /></root>
+        <logger name="com.shinkwang.devjob" level="DEBUG" />
+    </springProfile>
+</configuration>
