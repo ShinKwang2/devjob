@@ -1,0 +1,32 @@
+@host = http://localhost:8888
+
+### 로그인 15회 연속 호출
+# @name loginRateLimit
+< {%
+    request.variables.set(
+        "attempt",
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    );
+%}
+POST {{host}}/api/auth/login
+Content-Type: application/json
+X-Test-Attempt: {{attempt}}
+
+{
+  "email": "rate-limit-test@example.com",
+  "password": "wrong-password"
+}
+
+> {%
+    const attempt = request.iteration() + 1;
+    const expectedStatus = attempt <= 10 ? 401 : 429;
+
+    client.log(`${attempt}회차: ${response.status}`);
+
+    client.test(`${attempt}회차 응답 검증`, function () {
+        client.assert(
+            response.status === expectedStatus,
+            `${attempt}회차는 ${expectedStatus}이어야 하지만 ${response.status}입니다.`
+        );
+    });
+%}
