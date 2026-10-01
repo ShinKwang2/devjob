@@ -38,14 +38,14 @@ public class JobService {
         Company company = companyRepository.findById(req.companyId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
 
-        Job job = new Job();
-        job.setCompany(company);
-        job.setTitle(req.title());
-        job.setDescription(req.description());
-        job.setSalary(req.salary());
-        job.setStatus(JobStatus.OPEN);
-        job.setDeadline(req.deadline());
-        job.setRegisteredBy(registeredBy);
+        Job job = Job.create(
+                company,
+                req.title(),
+                req.description(),
+                req.salary(),
+                req.deadline(),
+                registeredBy
+        );
 
         return JobResponse.from(jobRepository.save(job));
     }

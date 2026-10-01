@@ -10,9 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "job")
 @Entity
@@ -54,6 +52,25 @@ public class Job {
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public static Job create(
+            Company company,
+            String title,
+            String description,
+            Integer salary,
+            LocalDate deadline,
+            Long registeredBy
+    ) {
+        Job job = new Job();
+        job.company = company;
+        job.title = title;
+        job.description = description;
+        job.salary = salary;
+        job.deadline = deadline;
+        job.registeredBy = registeredBy;
+        job.status = JobStatus.OPEN;
+        return job;
+    }
 
     public void update(String title, String description, Integer salary, LocalDate deadline) {
         this.title = title;
