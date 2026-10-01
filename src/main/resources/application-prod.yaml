@@ -1,0 +1,82 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate # Flyway가 스키마를 변경하고 Hibernate는 검증만 수행
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      repositories:
+        enabled: false
+
+  cache:
+    type: redis
+
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  web:
+    resources:
+      static-locations: "file:${FILE_UPLOAD_DIR}/,classpath:/static/" # upload/ 를 정적 경로로 제공
+
+  servlet:
+    multipart:
+      max-file-size: 10MB # 서버가 받아들이는 하드 리밋
+      max-request-size: 10MB
+
+
+
+file:
+  upload-dir: ${FILE_UPLOAD_DIR}
+  base-url: ${FILE_BASE_URL}
+
+mail:
+  enabled: ${MAIL_ENABLED:false}
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:3600000}
+
+server:
+  port: ${SERVER_PORT:8888}
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when_authorized
+      show-components: when_authorized
+      roles: ADMIN
+  health:
+    mail:
+      enabled: false # SMTP 미설정 시 메일 헬스체크로 health=DOWN 방지

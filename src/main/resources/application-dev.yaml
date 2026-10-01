@@ -1,0 +1,73 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:15432/devjob
+    username: devjob
+    password: devjob
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate # 운영에서는 none. 생성은 Flyway가 전달
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 16379
+      repositories:
+        enabled: false
+
+  cache:
+    type: redis
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  web:
+    resources:
+      static-locations: "file:uploads/,classpath:/static/" # upload/ 를 정적 경로로 제공
+
+  servlet:
+    multipart:
+      max-file-size: 10MB # 서버가 받아들이는 하드 리밋
+      max-request-size: 10MB
+
+file:
+  upload-dir: uploads
+  base-url: http://localhost:8888
+
+mail:
+  enabled: false
+
+jwt:
+  secret: "devjob-portfolio-jwt-secret-key-please-change-this-in-production-1234567890"
+  expiration: 3600000
+
+server:
+  port: 8888
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus # 노출할 것만 명시
+  endpoint:
+    health:
+      show-details: when_authorized
+      show-components: when_authorized
+      roles: ADMIN
+  health:
+    mail:
+      enabled: false # SMTP 미설정 시 메일 헬스체크로 health=DOWN 방지
