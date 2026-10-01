@@ -1,0 +1,22 @@
+@host = http://localhost:8888
+
+### 사용자 로그인
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "skl@crinity.com",
+  "password": "12345678"
+}
+
+> {%
+    client.global.set("accessToken", response.body.data.accessToken);
+%}
+
+### 공고 지원
+POST {{host}}/api/jobs/5/apply
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 17:55:01.522 [8beba624] [http-nio-8888-exec-4] DEBUG c.s.devjob.aop.ServiceLoggingAspect - [OK] JobApplicationService.apply(..) - 84ms
+### 17:55:01.549 [8beba624] [devjob-async-1] INFO  c.s.devjob.email.EmailService - [메일 발송 생략] to=skl@crinity.com, job=DevOps 엔지니어(데브잡)
