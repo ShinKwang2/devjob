@@ -6,11 +6,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificationExecutor<Job> {
 
@@ -51,5 +51,18 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
                          @Param("location") String location,
                          Pageable pageable);
 
-    List<Job> findByStatusAndDeadlineBefore(JobStatus status, LocalDate deadline);
+    // List<Job> findByStatusAndDeadlineBefore(JobStatus status, LocalDate deadline);
+
+    // clearAutomatically : 영속성 컨텍스트 비우기
+    // flushAutomatically : 이미 쌓인 변경을 먼저 DB에 반영
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("""
+        UPDATE Job j
+        SET j.status = com.shinkwang.devjob.domain.JobStatus.CLOSED,
+            j.version = j.version + 1,
+            j.updatedAt = CURRENT_TIMESTAMP
+        WHERE j.status = com.shinkwang.devjob.domain.JobStatus.OPEN
+        AND j.deadline < :today
+    """)
+    int closeExpiredJobs(@Param("today") LocalDate today);
 }

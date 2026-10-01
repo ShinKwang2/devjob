@@ -131,12 +131,12 @@ public class JobService {
         }
     }
 
-    @CacheEvict(value = "jobs", allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "jobs", allEntries = true),
+            @CacheEvict(value = "jobDetails", allEntries = true)
+    })
     @Transactional
-    public int closeExpiredJobs() {
-        List<Job> expiredJobs = jobRepository.findByStatusAndDeadlineBefore(JobStatus.OPEN, LocalDate.now());
-
-        expiredJobs.forEach(job -> job.changeStatus(JobStatus.CLOSED));
-        return expiredJobs.size();
+    public int closeExpiredJobs(LocalDate now) {
+        return jobRepository.closeExpiredJobs(now);
     }
 }
