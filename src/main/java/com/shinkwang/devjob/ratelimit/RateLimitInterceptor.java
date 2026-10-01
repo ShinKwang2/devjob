@@ -4,7 +4,6 @@ import com.shinkwang.devjob.exception.ErrorCode;
 import com.shinkwang.devjob.exception.ErrorResponseWriter;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
-import io.github.bucket4j.Refill;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +38,11 @@ public class RateLimitInterceptor implements HandlerInterceptor {
     }
 
     private Bucket newBucket() {
-        Bandwidth limit = Bandwidth.classic(CAPACITY, Refill.greedy(CAPACITY, REFILL));
+        Bandwidth limit = Bandwidth.builder()
+                .capacity(CAPACITY)
+                .refillGreedy(CAPACITY, REFILL)
+                .build();
+
         return Bucket.builder().addLimit(limit).build();
     }
 
