@@ -16,6 +16,7 @@ public enum ErrorCode {
     // 인증
     LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 올바르지 않습니다"),
     LOGIN_RATE_LIMITED(HttpStatus.TOO_MANY_REQUESTS, "로그인 시도가 너무 많습니다. 잠시 후 다시 시도해 주세요."),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증이 필요하거나 인증 정보가 유효하지 않습니다."),
 
     // 공고
     JOB_NOT_FOUND(HttpStatus.NOT_FOUND, "채용 공고를 찾을 수 없습니다"),
