@@ -2,6 +2,7 @@ package com.shinkwang.devjob.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -59,9 +60,18 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.of(ErrorCode.RESOURCE_NOT_FOUND));
     }
 
+    // DB 제약 조건
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         log.warn("Data integrity violation", ex);
+
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ErrorResponse.of(ErrorCode.DATA_CONFLICT));
+    }
+
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    public ResponseEntity<ErrorResponse> handleOptimisticLock(OptimisticLockingFailureException ex) {
+        log.warn("Optimistic locking failure", ex);
 
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ErrorResponse.of(ErrorCode.DATA_CONFLICT));
