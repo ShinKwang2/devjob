@@ -1,0 +1,40 @@
+# Gradle
+build/
+.gradle/
+
+# Git
+.git/
+.gitattributes
+
+# IDE
+.junie/
+
+# HTTP test files
+http/
+
+# Seed data (development only)
+seed.sql
+seed-jobs.sql
+seed-dev-data.sql
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# Deployment secrets
+.env
+.env.*
+
+uploads
+S1
+
+*.iml

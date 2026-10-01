@@ -39,3 +39,6 @@ out/
 S1/**
 S1
 uploads/
+.env
+.env.*
+!.env.example
