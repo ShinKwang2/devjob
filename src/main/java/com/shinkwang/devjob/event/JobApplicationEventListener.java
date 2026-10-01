@@ -8,12 +8,12 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 @RequiredArgsConstructor
 @Component
-public class JobApplicationEmailListener {
+public class JobApplicationEventListener {
 
     private final EmailService emailService;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void sendEmailAfterJobApply(JobApplicationCompletedEvent event) {
+    public void sendEmailAfterJobApply(JobApplicationSubmittedEvent event) {
         emailService.sendJobApplicationCompletedEmail(
                 event.recipientEmail(),
                 event.jobTitle(),

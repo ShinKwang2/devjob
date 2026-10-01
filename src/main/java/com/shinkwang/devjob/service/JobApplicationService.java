@@ -5,7 +5,7 @@ import com.shinkwang.devjob.domain.JobApplication;
 import com.shinkwang.devjob.domain.JobStatus;
 import com.shinkwang.devjob.domain.Member;
 import com.shinkwang.devjob.dto.JobApplicationResponse;
-import com.shinkwang.devjob.event.JobApplicationCompletedEvent;
+import com.shinkwang.devjob.event.JobApplicationSubmittedEvent;
 import com.shinkwang.devjob.exception.BusinessException;
 import com.shinkwang.devjob.exception.ErrorCode;
 import com.shinkwang.devjob.repository.JobApplicationRepository;
@@ -51,7 +51,7 @@ public class JobApplicationService {
         );
 
         eventPublisher.publishEvent(
-                new JobApplicationCompletedEvent(
+                new JobApplicationSubmittedEvent(
                         member.getEmail(),
                         job.getTitle(),
                         job.getCompany().getName()
