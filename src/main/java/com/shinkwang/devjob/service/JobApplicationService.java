@@ -5,13 +5,14 @@ import com.shinkwang.devjob.domain.JobApplication;
 import com.shinkwang.devjob.domain.JobStatus;
 import com.shinkwang.devjob.domain.Member;
 import com.shinkwang.devjob.dto.JobApplicationResponse;
-import com.shinkwang.devjob.email.EmailService;
+import com.shinkwang.devjob.event.JobApplicationCompletedEvent;
 import com.shinkwang.devjob.exception.BusinessException;
 import com.shinkwang.devjob.exception.ErrorCode;
 import com.shinkwang.devjob.repository.JobApplicationRepository;
 import com.shinkwang.devjob.repository.JobRepository;
 import com.shinkwang.devjob.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,8 @@ public class JobApplicationService {
     private final JobApplicationRepository jobApplicationRepository;
     private final JobRepository jobRepository;
     private final MemberRepository memberRepository;
-    private final EmailService emailService;
+
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public JobApplicationResponse apply(Long memberId, Long jobId) {
@@ -48,8 +50,12 @@ public class JobApplicationService {
                 .build()
         );
 
-        emailService.sendJobApplicationCompletedEmail(
-                member.getEmail(), job.getTitle(), job.getCompany().getName()
+        eventPublisher.publishEvent(
+                new JobApplicationCompletedEvent(
+                        member.getEmail(),
+                        job.getTitle(),
+                        job.getCompany().getName()
+                )
         );
 
         return JobApplicationResponse.from(saved);

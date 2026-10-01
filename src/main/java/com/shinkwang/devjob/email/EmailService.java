@@ -9,6 +9,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,8 +32,10 @@ public class EmailService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
+            String subjectJobTitle = normalizeSubjectText(jobTitle);
+
             helper.setTo(to);
-            helper.setSubject("[DevJob] 지원 완료: " + jobTitle);
+            helper.setSubject("[DevJob] 지원 완료: " + subjectJobTitle);
             helper.setText(buildJobApplicationCompletedHtml(jobTitle, companyName), true);
 
             mailSender.send(message);
@@ -43,6 +46,10 @@ public class EmailService {
     }
 
     private String buildJobApplicationCompletedHtml(String jobTitle, String companyName) {
+
+        String escapedJobTitle = HtmlUtils.htmlEscape(jobTitle);
+        String escapedCompanyName = HtmlUtils.htmlEscape(companyName);
+
         return """
                 <div style="font-family: 'Apple SD Gothic Neo', sans-serif; line-height: 1.6;">
                   <h2>지원이 완료됐습니다 ㅣ🎉</h2>
@@ -51,6 +58,13 @@ public class EmailService {
                   <hr/>
                   <p style="color:#888; font-size:12px;">본 메일은 발신 전용입니다.</p>
                 </div>
-                """.formatted(jobTitle, companyName);
+                """.formatted(escapedJobTitle, escapedCompanyName);
+    }
+
+    private String normalizeSubjectText(String value) {
+        return value
+                .replace('\r', ' ')
+                .replace('\n', ' ')
+                .strip();
     }
 }
