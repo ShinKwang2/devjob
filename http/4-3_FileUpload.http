@@ -35,5 +35,6 @@ Content-Type: image/jpeg
     client.global.set("uploadedFileUrl", response.body.data);
  %}
 
-
-
+### 파일 조회
+GET {{host}}/e792e024-bba1-4d73-b925-a1265a20bb89.jpeg
+Authorization: Bearer {{accessToken}}
