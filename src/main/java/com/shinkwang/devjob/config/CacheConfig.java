@@ -1,5 +1,6 @@
 package com.shinkwang.devjob.config;
 
+import org.springframework.boot.cache.autoconfigure.RedisCacheManagerBuilderCustomizer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,14 @@ import java.time.Duration;
 @Configuration
 @EnableCaching
 public class CacheConfig {
+
+    @Bean
+    public RedisCacheManagerBuilderCustomizer jobDetailsCacheCustomizer(RedisCacheConfiguration cacheConfiguration) {
+        return builder -> builder.withCacheConfiguration(
+                "jobDetails",
+                cacheConfiguration.entryTtl(Duration.ofMinutes(2L))
+        );
+    }
 
     @Bean
     public RedisCacheConfiguration cacheConfiguration() {

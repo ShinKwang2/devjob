@@ -13,12 +13,12 @@ import com.shinkwang.devjob.util.SortValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -56,6 +56,7 @@ public class JobService {
         return JobResponse.from(job);
     }
 
+    @Cacheable(value = "jobDetails", key = "#id")
     public JobDetailResult findDetail(Long id) {
         Job job = jobRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.JOB_NOT_FOUND));
@@ -77,7 +78,10 @@ public class JobService {
         );
     }
 
-    @CacheEvict(value = "jobs", allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "jobs", allEntries = true),
+            @CacheEvict(value = "jobDetails", key = "#id")
+    })
     @Transactional
     public JobResponse update(Long id, JobUpdateRequest req, Long requesterId, boolean isAdmin) {
         Job job = jobRepository.findById(id)
@@ -96,7 +100,10 @@ public class JobService {
         );
     }
 
-    @CacheEvict(value = "jobs", allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "jobs", allEntries = true),
+            @CacheEvict(value = "jobDetails", key = "#id")
+    })
     @Transactional
     public void delete(Long id) {
         if (!jobRepository.existsById(id)) {
@@ -105,7 +112,10 @@ public class JobService {
         jobRepository.deleteById(id);
     }
 
-    @CacheEvict(value = "jobs", allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "jobs", allEntries = true),
+            @CacheEvict(value = "jobDetails", key = "#id")
+    })
     @Transactional
     public void delete(Long id, Long requesterId, boolean isAdmin) {
         Job job = jobRepository.findById(id)
