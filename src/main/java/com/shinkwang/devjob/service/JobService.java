@@ -136,7 +136,7 @@ public class JobService {
             @CacheEvict(value = "jobDetails", allEntries = true)
     })
     @Transactional
-    public int closeExpiredJobs(LocalDate now) {
-        return jobRepository.closeExpiredJobs(now);
+    public int closeExpiredJobs(LocalDate today) {
+        return jobRepository.closeExpiredJobs(today);
     }
 }
