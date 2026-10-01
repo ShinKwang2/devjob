@@ -1,0 +1,4 @@
+@host = http://localhost:8888
+
+### 모집 공고 조회 -> 로깅 확인
+GET {{host}}/api/jobs
