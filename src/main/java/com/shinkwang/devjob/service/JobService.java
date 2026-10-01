@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -117,5 +119,14 @@ public class JobService {
         if (!isAdmin && !job.getRegisteredBy().equals(requesterId)) {
             throw new BusinessException(ErrorCode.FORBIDDEN);
         }
+    }
+
+    @CacheEvict(value = "jobs", allEntries = true)
+    @Transactional
+    public int closeExpiredJobs() {
+        List<Job> expiredJobs = jobRepository.findByStatusAndDeadlineBefore(JobStatus.OPEN, LocalDate.now());
+
+        expiredJobs.forEach(job -> job.changeStatus(JobStatus.CLOSED));
+        return expiredJobs.size();
     }
 }
