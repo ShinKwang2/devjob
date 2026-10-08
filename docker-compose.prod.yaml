@@ -1,0 +1,14 @@
+services:
+  devjob-app:
+    image: ${DEVJOB_IMAGE:-devjob:latest}
+    container_name: devjob-app
+    restart: unless-stopped
+    env_file:
+      - .env.prod
+    ports:
+      - "${HOST_PORT:-8888}:8888"
+    volumes:
+      - uploads_data:/app/uploads
+
+volumes:
+  uploads_data:

@@ -6,10 +6,40 @@ services:
       POSTGRES_DB: devjob
       POSTGRES_USER: devjob
       POSTGRES_PASSWORD: devjob
-    ports:
-      - "15432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devjob"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  devjob-redis:
+    image: redis:8-alpine
+    container_name: devjob-redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  devjob-app:
+    build:
+      context: .
+    image: devjob:local
+    container_name: devjob-app
+    env_file:
+      - .env.dev
+    ports:
+      - "${HOST_PORT:-8888}:8888"
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      devjob-db:
+        condition: service_healthy
+      devjob-redis:
+        condition: service_healthy
 
 volumes:
   postgres_data:
+  uploads_data:

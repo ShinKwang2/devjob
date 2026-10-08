@@ -59,7 +59,7 @@ jwt:
   expiration: ${JWT_EXPIRATION:3600000}
 
 server:
-  port: ${SERVER_PORT:8888}
+  port: 8888
 
 springdoc:
   api-docs:
