@@ -20,7 +20,7 @@ public record JobApplicationResponse(
                 apply.getJob().getTitle(),
                 apply.getJob().getCompany().getName(),
                 apply.getStatus(),
-                apply.getCreateAt()
+                apply.getCreatedAt()
         );
     }
 }
